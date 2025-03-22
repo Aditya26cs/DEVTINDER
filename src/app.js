@@ -1,8 +1,16 @@
 const express = require("express");
-
+const connectDb = require("./config/database");
 const app = express();
+ 
 
-app.listen(3000);
+connectDb()
+.then(() => {
+    console.log("database connected successfully")
+    app.listen(3000);
+})
+.catch((err) => {
+ console.error("database not connected ")
+})
 
 // function takes two thing path and (middleware) . it can be as many router handler function
 
@@ -133,27 +141,49 @@ app.post("/user/data", userAuth,  (req,res) => {
 // })
 
 
-app.get("/getUserData" ,(req,res) => {
+// app.get("/getUserData" ,(req,res) => {
      
-    // database logic
-     try{
-        throw new Error("wrongggggg.......")
-        res.send("user data send") 
-    }
-    catch(error){
-        res.status(500).send("something went wrongggg")
-    }
+//     // database logic
+//      try{
+//         throw new Error("wrongggggg.......")
+//         res.send("user data send") 
+//     }
+//     catch(error){
+//         res.status(500).send("something went wrongggg")
+//     }
 
    
-})
+// })
 
-app.use("/", (err, req, res, next) => {
-    if(err){
-        res.status(500).send("something went wrong")
-    }
-})
+// app.use("/", (err, req, res, next) => {
+//     if(err){
+//         res.status(500).send("something went wrong")
+//     }
+// })
 
  
+                      //********************************************/
+
+const User = require("./models/user") 
+app.post("/signup" , async (req,res) => {
+    
+    const user = new User({
+        firstName: "aditya",
+        lastName: "maheshwari",
+        age: 21,
+        gender: "male",
+        emailId: "adi@com",
+        password:"adi"
+    });
+   
+    try{
+        await  user.save();
+        res.send('user added successfully')
+    }
+    catch(err){
+       res.status(400).send("error occur")
+    }
+})                      
  
 
 
