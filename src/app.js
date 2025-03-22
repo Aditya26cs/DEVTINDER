@@ -4,7 +4,7 @@ const app = express();
 
 app.listen(3000);
 
-// function takes two thing path and route handler . it can be as many router handler function
+// function takes two thing path and (middleware) . it can be as many router handler function
 
 // app.use("/" , (req, res) => {
 //      res.send("namaste node");
@@ -72,31 +72,88 @@ app.listen(3000);
 //     res.send("lets see what happen")
 // })
 
-app.use(
-    "/user" , 
-    (req, res, next) => {
-         console.log(" first   response here")
-        // res.send("first response");
-         next();
-    },
-    (req,res ,next) => {
-        console.log(" second response here")
-         // res.send("2nd response send")
-         next();
-    },
-    (req,res, next) => {
-        console.log("third response here")
-        // res.send("2nd response send")
-        next();
-    },
-    (req,res) => {
-         res.send("4th response send")
-    }
-)
+
+//  get /user =>  middleware chain => request handler (route handler)
+// express js checks all the route and goes to each middleware and finally a function comes which send request called   
+// request handler.
+
+// app.use(
+//     "/user" , 
+//     (req, res, next) => {
+//          console.log(" first   response here")
+//         // res.send("first response");
+//          next();
+//     }, 
+//     (req,res ,next) => {
+//         console.log(" second response here")
+//          // res.send("2nd response send")
+//          next();
+//     },
+//     (req,res, next) => {
+//         console.log("third response here")
+//         // res.send("2nd response send")
+//         next();
+//     },
+//     (req,res) => {
+//          res.send("4th response send")
+//     }
+// )
 
 // it does not possible to send the request on the same route. because the connection between client and server is disconnected.
 // after client recieve a first response . 
 
+
+ 
+
+const {adminAuth, userAuth} = require("./middleware/auth")
+app.use("/admin" , adminAuth)
+// app.use("/user" , userAuth)
+
+app.get("/admin/data", (req,res) => {
+       
+      res.send("all data send")
+})
+
+app.post("/user/login",  (req,res) => {
+    res.send("login succesful")
+})
+
+app.post("/user/data", userAuth,  (req,res) => {
+    res.send("data is send succesful")
+})
+
+// error handling 
+
+
+// Error Handling Middleware
+// app.use("/", (err, req, res, next) => {
+//     if(err){
+//         res.status(500).send("something went wrong")
+//     }
+// })
+
+
+app.get("/getUserData" ,(req,res) => {
+     
+    // database logic
+     try{
+        throw new Error("wrongggggg.......")
+        res.send("user data send") 
+    }
+    catch(error){
+        res.status(500).send("something went wrongggg")
+    }
+
+   
+})
+
+app.use("/", (err, req, res, next) => {
+    if(err){
+        res.status(500).send("something went wrong")
+    }
+})
+
+ 
  
 
 
