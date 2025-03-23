@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 // connecting the application to the cluster
 
 const connectDb = async () => {
