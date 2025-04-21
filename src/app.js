@@ -3,7 +3,7 @@ const connectDb = require("./config/database");
 const app = express();
  
 
-connectDb()
+connectDb() 
 .then(() => {
     console.log("database connected successfully")
     app.listen(3000);
@@ -118,8 +118,7 @@ app.use("/admin" , adminAuth)
 // app.use("/user" , userAuth)
 
 app.get("/admin/data", (req,res) => {
-       
-      res.send("all data send")
+       res.send("all data send")
 })
 
 app.post("/user/login",  (req,res) => {
@@ -164,17 +163,31 @@ app.post("/user/data", userAuth,  (req,res) => {
  
                       //********************************************/
 
+// ✔ JavaScript Object → Used in JavaScript code, supports functions & variables.
+// ✔ JSON → Used for data storage & exchange, only supports simple data types.
+// ✔ Use JSON.stringify() to convert JS object → JSON string.
+// ✔ Use JSON.parse() to convert JSON string → JS object.
+
 const User = require("./models/user") 
+
+app.use(express.json());
+// this middleware help to read the request comming in the form of json form and convert it into js object and send 
+// back to the request.body. without it server will not understood the data(show "undefined) that was send through client in json format.
+
 app.post("/signup" , async (req,res) => {
-    
-    const user = new User({
-        firstName: "aditya",
-        lastName: "maheshwari",
-        age: 21,
-        gender: "male",
-        emailId: "adi@com",
-        password:"adi"
-    });
+  
+    //   console.log(req.body);
+
+    // const user = new User({
+    //     firstName: "aditya",
+    //     lastName: "maheshwari",
+    //     age: 21,
+    //     gender: "male",
+    //     emailId: "adi@com",
+    //     password:"adi"
+    // });
+
+    const user = new User(req.body)
    
     try{
         await  user.save();
@@ -183,10 +196,26 @@ app.post("/signup" , async (req,res) => {
     catch(err){
        res.status(400).send("error occur")
     }
-})                      
+}) 
+
+app.use("/user" , async(req, res) => {
+
+    const email = req.body.emailId
+     
+    try{
+        const user = await User.findOne({
+            emailId : email
+        })
+        res.send(user)
+        // it send array of objects
+    }
+    catch(err){
+       res.status(400).send("user not found")
+    }
+})
+
+// to fetch all the users we have to use the -> User.find({}).
  
 
 
-
- 
 

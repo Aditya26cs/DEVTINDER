@@ -10,10 +10,10 @@ const mongoose = require("mongoose");
 
 // Model = Interface to Work with Documents.
 
-//  A Model in Mongoose is like a bridge between your application and the MongoDB collection. It allows you to create, read, 
+// A Model in Mongoose is like a bridge between your application and the MongoDB collection. It allows you to create, read, 
 // update, and delete (CRUD) documents in a specific collection.
 
-const userSchema =   mongoose.Schema({
+const userSchema =  mongoose.Schema({
     firstName: {
         type: String
     }
