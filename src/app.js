@@ -176,7 +176,7 @@ app.use(express.json());
 
 app.post("/signup" , async (req,res) => {
   
-    //   console.log(req.body);
+      console.log(req.body);
 
     // const user = new User({
     //     firstName: "aditya",
@@ -194,11 +194,11 @@ app.post("/signup" , async (req,res) => {
         res.send('user added successfully')
     }
     catch(err){
-       res.status(400).send("error occur")
+       res.status(400).send("error occur" +  err.message)
     }
 }) 
 
-app.use("/user" , async(req, res) => {
+app.get("/user" , async(req, res) => { 
 
     const email = req.body.emailId
      
@@ -214,8 +214,50 @@ app.use("/user" , async(req, res) => {
     }
 })
 
-// to fetch all the users we have to use the -> User.find({}).
+
+       // to fetch all the users we have to use the -> User.find({}).
  
+
+app.delete("/user", express.json(), async (req, res) => {
+    const id = req.body.userId;
+
+    
+    try {
+        const user = await User.findByIdAndDelete(id);
+
+        if (!user) {
+            console.log("No user found with ID:", id);
+            return res.status(404).send("User not found");
+        }
+
+      //   console.log("User deleted successfully:", user);
+      res.status(200).send("user deleted successfully");
+    } catch (err) {
+        // console.error("Error while deleting user:", err);
+         res.status(500).send("Something went wrong");
+    }
+});
+
+app.patch("/user" , async (req, res) => {
+
+    const emailId = req.body.userId;
+    const data = req.body;
+    try{
+     const user  = await User.findByIdAndUpdate(emailId, data , {
+        runValidators : true,
+        returnDocument : "after"
+     })
+        res.send("updated successfully")
+        console.log(user)
+    }catch(err){
+        res.status(400).send("error found ")
+    }
+})
+
+
+
+
+
 
 
 

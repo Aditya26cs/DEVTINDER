@@ -13,27 +13,53 @@ const mongoose = require("mongoose");
 // A Model in Mongoose is like a bridge between your application and the MongoDB collection. It allows you to create, read, 
 // update, and delete (CRUD) documents in a specific collection.
 
-const userSchema =  mongoose.Schema({
+const userSchema =  mongoose.Schema(
+    {
     firstName: {
-        type: String
+        type: String,
+        minLength : 4 
     }
     ,
     lastName:{
         type: String
     },
     age:{
-        type: Number
+        type: Number,
+        min: 12,
+        max : 21
     },
     gender:{
-        type: String
+        type: String,
+        validate(value){
+            if(!["male" , "female" , "other"].includes(value)){
+                  throw new Error("gender is incorrect")
+            }
+        }
+        // so now  validate function does not work in case of updation .it will only validate when we create a new user.
     },
     emailId: {
-        type: String
+        type: String,
+        required: true,
+        unique : true,
+        lowercase : true,
+        trim : true,
     },
     password: {
-        type : String
+        type : String,
+        required : true
+    },
+    about : {
+        type : String,
+        default : "this is a default discription of user",
+    },
+    skills : {
+        type : [String]
     }
-})
+},
+{
+    timestamps : true,
+}
+)
 
 module.exports = mongoose.model("User", userSchema); // modelName , schema
 // "User" → Model name (Mongoose automatically creates "users" collection)
