@@ -174,9 +174,14 @@ app.use(express.json());
 // this middleware help to read the request comming in the form of json form and convert it into js object and send 
 // back to the request.body. without it server will not understood the data(show "undefined) that was send through client in json format.
 
+
+const {validateSignupData} = require("./utils/validation")
+const bcrypt = require("bcrypt")
+const validator = require("validator");
+
 app.post("/signup" , async (req,res) => {
   
-      console.log(req.body);
+    //   console.log(req.body);
 
     // const user = new User({
     //     firstName: "aditya",
@@ -187,16 +192,28 @@ app.post("/signup" , async (req,res) => {
     //     password:"adi"
     // });
 
-    const user = new User(req.body)
-   
+    // validation of user data
+  
     try{
+        validateSignupData(req)
+        // console.log("validate successfully")
+
+        const {firstName , lastName , emailId , password} = req.body
+
+        const hashPass = await bcrypt.hash(password , 5);
+        const user = new User({
+            firstName,
+            lastName,
+            emailId,
+            password : hashPass,
+        })
         await  user.save();
         res.send('user added successfully')
     }
     catch(err){
-       res.status(400).send("error occur" +  err.message)
+       res.status(400).send("error occur " +  err.message)
     }
-}) 
+})
 
 app.get("/user" , async(req, res) => { 
 
@@ -237,7 +254,7 @@ app.delete("/user", express.json(), async (req, res) => {
          res.status(500).send("Something went wrong");
     }
 });
-
+ 
 app.patch("/user/:userId" , async (req, res) => {
 
     const emailId = req.params?.userId;
@@ -266,10 +283,33 @@ app.patch("/user/:userId" , async (req, res) => {
     }
 })
 
+app.post("/login" , async (req, res) => {
 
+ const {emailId , password} = req.body;
 
+  try{
+    if(!validator.isEmail(emailId)){
+        throw new Error("enter correct email")
+     }
+    
+     const user = await User.findOne({
+        emailId : emailId
+     })
+    
+    if(!user){
+        throw new Error("email is not found ")
+    }
+    
+    const isPasswordValid = await bcrypt.compare(password , user.password)
+    if(isPasswordValid){
+        res.send("user loggin successful")
+        console.log(user); 
+    }else{
+        throw new Error("password is not correct")
+    }
+  }
+  catch(err){
+    res.status(400).send("error found" + err.message)
+  }
 
-
-
-
-
+})

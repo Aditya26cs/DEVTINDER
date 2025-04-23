@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require('validator');
 
 // Schema = Structure of a Document
 
@@ -43,6 +44,11 @@ const userSchema =  mongoose.Schema(
         unique : true,
         lowercase : true,
         trim : true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("error found")
+            }
+        }
     },
     password: {
         type : String,

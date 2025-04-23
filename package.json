@@ -15,7 +15,9 @@
   "author": "aditya maheshwari",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.21.2",
-    "mongoose": "^8.12.2"
+    "mongoose": "^8.12.2",
+    "validator": "^13.15.0"
   }
 }
