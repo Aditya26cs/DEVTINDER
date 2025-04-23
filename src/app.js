@@ -238,19 +238,31 @@ app.delete("/user", express.json(), async (req, res) => {
     }
 });
 
-app.patch("/user" , async (req, res) => {
+app.patch("/user/:userId" , async (req, res) => {
 
-    const emailId = req.body.userId;
+    const emailId = req.params?.userId;
     const data = req.body;
+ 
     try{
-     const user  = await User.findByIdAndUpdate(emailId, data , {
+
+    const Update_Allowed = ["about" , "gender" , "age" , "skills"];
+
+    const isUpdateAllowed = Object.keys(data).every((k) => {
+        return Update_Allowed.includes(k);
+    })
+
+    if(!isUpdateAllowed){
+          res.status(400).send("Update not allowed for some fields");
+    }
+
+    const user  = await User.findByIdAndUpdate(emailId, data , {
         runValidators : true,
         returnDocument : "after"
-     })
+    })
         res.send("updated successfully")
         console.log(user)
     }catch(err){
-        res.status(400).send("error found ")
+        res.status(400).send("error found")
     }
 })
 
