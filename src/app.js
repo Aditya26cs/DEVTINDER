@@ -201,6 +201,7 @@ app.post("/signup" , async (req,res) => {
         const {firstName , lastName , emailId , password} = req.body
 
         const hashPass = await bcrypt.hash(password , 5);
+
         const user = new User({
             firstName,
             lastName,
@@ -283,6 +284,14 @@ app.patch("/user/:userId" , async (req, res) => {
     }
 })
 
+
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser")
+app.use(cookieParser());
+// cookie-parser is a middleware for Express.js that helps us read cookies sent by the browser.
+
+
+
 app.post("/login" , async (req, res) => {
 
  const {emailId , password} = req.body;
@@ -302,8 +311,19 @@ app.post("/login" , async (req, res) => {
     
     const isPasswordValid = await bcrypt.compare(password , user.password)
     if(isPasswordValid){
+
+        // create a jwt token   
+
+        const token = await jwt.sign({_id : user._id} , "devTinder@123");
+        // console.log(token)
+
+        // add a token to a cookie  -> send back the response to the client with this cookie.
+
+        res.cookie("token" , token);
+
+        
         res.send("user loggin successful")
-        console.log(user); 
+        //console.log(user); 
     }else{
         throw new Error("password is not correct")
     }
@@ -313,3 +333,30 @@ app.post("/login" , async (req, res) => {
   }
 
 })
+
+app.get("/profile" , async (req, res) => {
+
+
+   try{
+    const cookie = req.cookies;
+    // console.log(cookie)
+    const {token}  = cookie;
+
+    if(!token){
+        res.send("token is not valid")
+    }
+    // now we have to validate this token
+
+     const decodedMessage = await jwt.verify(token , "devTinder@123");
+
+    //  console.log(decodedMessage);
+
+     const {_id} = decodedMessage;
+     const user  = await User.findById(_id);
+     res.send(user);
+   }
+   catch(err){
+    res.status(400).send("error found" + err.message)
+   }
+ 
+}) 
