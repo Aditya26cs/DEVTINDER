@@ -43,7 +43,7 @@ connectDb()
 // dynamic routing 
 
 // app.get("/user/:userID" , (req, res) => {
-//    // console.log(req.query);
+    // console.log(req.query);
 //    console.log(req.params);
 //     res.send({
 //         "name" : "aditya",
@@ -52,18 +52,19 @@ connectDb()
      
 // })
 
-//   //this will only handle post call to "/user"
+   //this will only handle post call to "/user"
 
 // app.post("/user" , (req, res) => {
 //     res.send("send is saved to db")
 // })
 
-// // this will only handle delete call to "/user"
+ // this will only handle delete call to "/user"
 // app.delete("/user" , (req, res) => {
 //     res.send("data delete succesfully")
 // })
 
-// // this will handle all the http method ( get , post , etc ) api call to "/test"
+// this will handle all the http method ( get , post , etc ) api call to "/test"
+
 // app.use("/test", (req, res) => {
 //     res.send("hello aditya welcome you to server");
 // }) 
@@ -81,7 +82,7 @@ connectDb()
 // })
 
 
-//  get /user =>  middleware chain => request handler (route handler)
+//  get "/user" =>  middleware chain => request handler (route handler)
 // express js checks all the route and goes to each middleware and finally a function comes which send request called   
 // request handler.
 
@@ -113,9 +114,10 @@ connectDb()
 
  
 
-const {adminAuth, userAuth} = require("./middleware/auth")
-app.use("/admin" , adminAuth)
-// app.use("/user" , userAuth)
+const {userAuth} = require("./middleware/auth")
+
+// app.use("/admin" , adminAuth)
+app.use("/user" , userAuth)
 
 app.get("/admin/data", (req,res) => {
        res.send("all data send")
@@ -168,16 +170,18 @@ app.post("/user/data", userAuth,  (req,res) => {
 // ✔ Use JSON.stringify() to convert JS object → JSON string.
 // ✔ Use JSON.parse() to convert JSON string → JS object.
 
+ 
+// express.json() middleware parses incoming JSON payloads, converts them into JavaScript objects, 
+// and attaches them to req.body.
+
 const User = require("./models/user") 
-
 app.use(express.json());
-// this middleware help to read the request comming in the form of json form and convert it into js object and send 
-// back to the request.body. without it server will not understood the data(show "undefined) that was send through client in json format.
-
-
 const {validateSignupData} = require("./utils/validation")
 const bcrypt = require("bcrypt")
 const validator = require("validator");
+
+
+
 
 app.post("/signup" , async (req,res) => {
   
@@ -233,7 +237,7 @@ app.get("/user" , async(req, res) => {
 })
 
 
-       // to fetch all the users we have to use the -> User.find({}).
+// to fetch all the users we have to use the -> User.find({}).
  
 
 app.delete("/user", express.json(), async (req, res) => {
@@ -258,7 +262,7 @@ app.delete("/user", express.json(), async (req, res) => {
  
 app.patch("/user/:userId" , async (req, res) => {
 
-    const emailId = req.params?.userId;
+    const UserId = req.params?.userId;
     const data = req.body;
  
     try{
@@ -273,7 +277,7 @@ app.patch("/user/:userId" , async (req, res) => {
           res.status(400).send("Update not allowed for some fields");
     }
 
-    const user  = await User.findByIdAndUpdate(emailId, data , {
+    const user  = await User.findByIdAndUpdate(UserId, data , {
         runValidators : true,
         returnDocument : "after"
     })
@@ -288,6 +292,7 @@ app.patch("/user/:userId" , async (req, res) => {
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser")
 app.use(cookieParser());
+
 // cookie-parser is a middleware for Express.js that helps us read cookies sent by the browser.
 
 
@@ -310,6 +315,7 @@ app.post("/login" , async (req, res) => {
     }
     
     const isPasswordValid = await bcrypt.compare(password , user.password)
+
     if(isPasswordValid){
 
         // create a jwt token   
@@ -317,7 +323,7 @@ app.post("/login" , async (req, res) => {
         const token = await jwt.sign({_id : user._id} , "devTinder@123");
         // console.log(token)
 
-        // add a token to a cookie  -> send back the response to the client with this cookie.
+        // add token to a cookie  -> send back the response to the client with this cookie.
 
         res.cookie("token" , token);
 
@@ -325,7 +331,7 @@ app.post("/login" , async (req, res) => {
         res.send("user loggin successful")
         //console.log(user); 
     }else{
-        throw new Error("password is not correct")
+        throw new Error("password is not correct");
     }
   }
   catch(err){
@@ -334,29 +340,13 @@ app.post("/login" , async (req, res) => {
 
 })
 
-app.get("/profile" , async (req, res) => {
-
+app.get("/profile" , userAuth , async (req, res) => {
 
    try{
-    const cookie = req.cookies;
-    // console.log(cookie)
-    const {token}  = cookie;
-
-    if(!token){
-        res.send("token is not valid")
-    }
-    // now we have to validate this token
-
-     const decodedMessage = await jwt.verify(token , "devTinder@123");
-
-    //  console.log(decodedMessage);
-
-     const {_id} = decodedMessage;
-     const user  = await User.findById(_id);
+     const user = req.user;
      res.send(user);
    }
    catch(err){
     res.status(400).send("error found" + err.message)
    }
- 
 }) 
