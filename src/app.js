@@ -117,7 +117,7 @@ connectDb()
 const {userAuth} = require("./middleware/auth")
 
 // app.use("/admin" , adminAuth)
-app.use("/user" , userAuth)
+// app.use("/user" , userAuth)
 
 app.get("/admin/data", (req,res) => {
        res.send("all data send")
@@ -179,46 +179,10 @@ app.use(express.json());
 const {validateSignupData} = require("./utils/validation")
 const bcrypt = require("bcrypt")
 const validator = require("validator");
-
-
-
-
-app.post("/signup" , async (req,res) => {
-  
-    //   console.log(req.body);
-
-    // const user = new User({
-    //     firstName: "aditya",
-    //     lastName: "maheshwari",
-    //     age: 21,
-    //     gender: "male",
-    //     emailId: "adi@com",
-    //     password:"adi"
-    // });
-
-    // validation of user data
-  
-    try{
-        validateSignupData(req)
-        // console.log("validate successfully")
-
-        const {firstName , lastName , emailId , password} = req.body
-
-        const hashPass = await bcrypt.hash(password , 5);
-
-        const user = new User({
-            firstName,
-            lastName,
-            emailId,
-            password : hashPass,
-        })
-        await  user.save();
-        res.send('user added successfully')
-    }
-    catch(err){
-       res.status(400).send("error occur " +  err.message)
-    }
-})
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser")
+app.use(cookieParser());
+// cookie-parser is a middleware for Express.js that helps us read cookies sent by the browser.
 
 app.get("/user" , async(req, res) => { 
 
@@ -235,11 +199,8 @@ app.get("/user" , async(req, res) => {
        res.status(400).send("user not found")
     }
 })
-
-
 // to fetch all the users we have to use the -> User.find({}).
  
-
 app.delete("/user", express.json(), async (req, res) => {
     const id = req.body.userId;
 
@@ -259,94 +220,3 @@ app.delete("/user", express.json(), async (req, res) => {
          res.status(500).send("Something went wrong");
     }
 });
- 
-app.patch("/user/:userId" , async (req, res) => {
-
-    const UserId = req.params?.userId;
-    const data = req.body;
- 
-    try{
-
-    const Update_Allowed = ["about" , "gender" , "age" , "skills"];
-
-    const isUpdateAllowed = Object.keys(data).every((k) => {
-        return Update_Allowed.includes(k);
-    })
-
-    if(!isUpdateAllowed){
-          res.status(400).send("Update not allowed for some fields");
-    }
-
-    const user  = await User.findByIdAndUpdate(UserId, data , {
-        runValidators : true,
-        returnDocument : "after"
-    })
-        res.send("updated successfully")
-        console.log(user)
-    }catch(err){
-        res.status(400).send("error found")
-    }
-})
-
-
-const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser")
-app.use(cookieParser());
-
-// cookie-parser is a middleware for Express.js that helps us read cookies sent by the browser.
-
-
-
-app.post("/login" , async (req, res) => {
-
- const {emailId , password} = req.body;
-
-  try{
-    if(!validator.isEmail(emailId)){
-        throw new Error("enter correct email")
-     }
-    
-     const user = await User.findOne({
-        emailId : emailId
-     })
-    
-    if(!user){
-        throw new Error("email is not found ")
-    }
-    
-    const isPasswordValid = await bcrypt.compare(password , user.password)
-
-    if(isPasswordValid){
-
-        // create a jwt token   
-
-        const token = await jwt.sign({_id : user._id} , "devTinder@123");
-        // console.log(token)
-
-        // add token to a cookie  -> send back the response to the client with this cookie.
-
-        res.cookie("token" , token);
-
-        
-        res.send("user loggin successful")
-        //console.log(user); 
-    }else{
-        throw new Error("password is not correct");
-    }
-  }
-  catch(err){
-    res.status(400).send("error found" + err.message)
-  }
-
-})
-
-app.get("/profile" , userAuth , async (req, res) => {
-
-   try{
-     const user = req.user;
-     res.send(user);
-   }
-   catch(err){
-    res.status(400).send("error found" + err.message)
-   }
-}) 

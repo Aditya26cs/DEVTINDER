@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require('validator');
-
+const jwt = require("jsonwebtoken")
 // Schema = Structure of a Document
 
 // A collection in MongoDB is like a table in SQL databases, but it stores documents instead of rows.
@@ -66,6 +66,14 @@ const userSchema =  mongoose.Schema(
     timestamps : true,
 }
 )
+
+userSchema.methods.getJWT = async function () {
+
+    const user = this;
+
+    const token = await jwt.sign({_id : user._id} , "devTinder@123" , {expiresIn: "0d"});
+    return token;
+}
 
 module.exports = mongoose.model("User", userSchema); // modelName , schema
 // "User" → Model name (Mongoose automatically creates "users" collection)
