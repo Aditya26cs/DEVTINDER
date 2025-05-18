@@ -220,3 +220,11 @@ app.delete("/user", express.json(), async (req, res) => {
          res.status(500).send("Something went wrong");
     }
 });
+
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRoute = require("./routes/requests")  
+
+app.use("/" , authRouter);
+app.use("/" , profileRouter);
+app.use("/" , requestRoute);

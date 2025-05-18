@@ -2,6 +2,11 @@ const express = require("express");
 
 // const app = express();
 const authRouter = express.Router();
+const User = require("../models/user") 
+const {validateSignupData} = require("../utils/validation")
+const bcrypt = require("bcrypt")
+const validator = require("validator");
+
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -65,3 +70,5 @@ authRouter.post("/login", async (req, res) => {
     res.status(400).send("error found" + err.message);
   }
 });
+
+module.exports = authRouter;
