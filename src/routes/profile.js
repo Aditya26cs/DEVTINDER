@@ -1,49 +1,37 @@
 const express = require("express");
 const profileRouter = express.Router();
-const {userAuth} = require("../middleware/auth")
+const { userAuth } = require("../middleware/auth");
+const { validateSignupData, validationEditProfileData } = require("../utils/validation");
 
-profileRouter.get("/profile" , userAuth , async (req, res) => {
+profileRouter.get("/profile/view", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("error found" + err.message);
+  }
+});
 
-   try{
-     const user = req.user;
-     res.send(user);
-   }
-   catch(err){
-    res.status(400).send("error found" + err.message)
-   }
-})
-
-
-profileRouter.patch("/user/:userId" , async (req, res) => {
-
-    const UserId = req.params?.userId;
-    const data = req.body;
- 
-    try{
-
-    const Update_Allowed = ["about" , "gender" , "age" , "skills"];
-
-    const isUpdateAllowed = Object.keys(data).every((k) => {
-        return Update_Allowed.includes(k);
-    })
-    
-      console.log("Update allowed?", isUpdateAllowed);
-
-    if(!isUpdateAllowed){
-        return  res.status(400).send("Update not allowed for some fields");
+profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
+  try {
+    if (!validationEditProfileData(req)) {
+      throw new Error("Invalid edit request");
     }
+    const loggedInUser = req.user;
+    // console.log(loggedInUser);
 
-    const user  = await User.findByIdAndUpdate(UserId, data , {
-        runValidators : true,
-        new : true
-    })
-        // console.log("Updated user:", user);
-        res.send("updated successfully")
-        console.log(user)
-    }catch(err){
-        // console.error("Error:", err);
-        res.status(400).send("error found" + err.message)
-    }
-})
+    Object.keys(req.body).forEach((k) => (loggedInUser[k] = req.body[k]));
+     await loggedInUser.save();
+     //console.log("updated user " + loggedInUser)
+     res.json({
+       message :  `${loggedInUser.firstName}, your profile is updated successfully`,
+       data : loggedInUser
+     }
+    )
+  } catch (err) {
+    // console.error("Error:", err);
+    res.status(400).send("error found " + err.message);
+  }
+});
 
 module.exports = profileRouter;

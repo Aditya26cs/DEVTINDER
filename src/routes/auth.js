@@ -32,7 +32,7 @@ authRouter.post("/signup", async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
   const { emailId, password } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   try {
     if (!validator.isEmail(emailId)) {
       throw new Error("enter correct email");
@@ -70,5 +70,13 @@ authRouter.post("/login", async (req, res) => {
     res.status(400).send("error found" + err.message);
   }
 });
+
+authRouter.post("/logout" , async(req, res) => {
+
+res.cookie("token" , null , {
+  expires: new Date(Date.now())
+})
+res.send("user logout successfully")
+})
 
 module.exports = authRouter;

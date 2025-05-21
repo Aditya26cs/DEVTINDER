@@ -16,6 +16,19 @@ const validateSignupData = (req) => {
     // }
 }; 
 
+const validationEditProfileData = (req) => {
+    const data = req.body;
+
+    
+    const Update_Allowed = ["about" , "gender" , "age" , "skills"];
+
+    const isUpdateAllowed = Object.keys(data).every((k) => {
+        return Update_Allowed.includes(k);
+    })
+     return isUpdateAllowed;
+     
+}
+
 module.exports = {
-    validateSignupData,
+    validateSignupData,validationEditProfileData
 };

@@ -1,11 +1,13 @@
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
+
 const  userAuth = async (req,res,next) => {
    
     try{
         const { token } = req.cookies;
-        // here we get all the cookies save in the browser/postmen/client.
-        console.log(token);
+        // here we get all the cookies save in the browser/postmen/client
+        // .
+        // console.log(token);
         if(!token){
             res.send("token is not valid");
         }
@@ -13,7 +15,7 @@ const  userAuth = async (req,res,next) => {
     
          const decodedMessage = jwt.verify(token, "devTinder@123");
     
-          console.log("decoded message " + decodedMessage);
+         // console.log("decoded message " + decodedMessage);
     
          const {_id} = decodedMessage;
          const user  = await User.findById(_id);
