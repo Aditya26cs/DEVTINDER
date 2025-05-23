@@ -4,7 +4,6 @@
 authRouter 
 - POST /SignUp
 - POST /Login
-
 - POST /LogOut
 
 
