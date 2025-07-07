@@ -38,7 +38,8 @@ connectDb()
 //     res.send("ohh my god")
 // })
 
-// this will only handle get call to "/user"
+// this will on
+// ly handle get call to "/user"
 
 // dynamic routing 
 

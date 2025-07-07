@@ -10,7 +10,6 @@ authRouter
 profileRouter
 - GET /Profile/view
 - PATCH /Profile/edit
-
 - PATCH /Profile/Password
 
 
@@ -26,6 +25,6 @@ userRouter
 - GET /request/received
 - GET /feed 
 
-
+status :- ignore , interested , accepted , rejected
 
 
