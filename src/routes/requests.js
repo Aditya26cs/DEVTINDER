@@ -21,6 +21,11 @@ requestRoute.post("/request/send/:status/:toUserId" , userAuth ,  async (req, re
            })
      }
 
+     const toUser = await user.findById(toUserId);
+     if(!toUser){
+         return res.status(400).send("user not found")
+     }
+
      const existingConnectionRequest = await ConnectionRequest.findOne({
          $or :  [
             {fromUserId , toUserId},
@@ -36,7 +41,7 @@ requestRoute.post("/request/send/:status/:toUserId" , userAuth ,  async (req, re
         fromUserId,
         toUserId,
         status
-    })
+    }) 
 
      const data = await connectionRequest.save();
 
