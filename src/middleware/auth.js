@@ -5,7 +5,6 @@ const userAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
     // here we get all the cookies save in the browser/postmen/client
-    // .
     // console.log(token);
     if (!token) {
       return  res.send("token is not valid");

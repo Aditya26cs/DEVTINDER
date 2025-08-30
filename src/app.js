@@ -187,12 +187,11 @@ app.use(cookieParser());
 
 app.get("/user" , async(req, res) => { 
 
-    const email = req.body.emailId
+    // const email = req.body.emailId
      
     try{
-        const user = await User.findOne({
-            emailId : email
-        })
+        const user = await User.find({})
+        //console.log(user)
         res.send(user)
         // it send array of objects
     }

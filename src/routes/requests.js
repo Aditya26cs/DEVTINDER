@@ -5,7 +5,7 @@ const user = require("../models/user");
 const ConnectionRequest = require("../models/ConnectionRequest");
  
 
-requestRoute.post("/request/send/:status/:toUserId" , userAuth ,  async (req, res) => {
+requestRoute.post("/request/send/:status/:toUserId" , userAuth ,  async (req, res) => { 
 
     try{
 
@@ -46,10 +46,10 @@ requestRoute.post("/request/send/:status/:toUserId" , userAuth ,  async (req, re
      const data = await connectionRequest.save();
 
      res.status(201).json({
-        message: "Connection request send successfully",
+        message:  req.user.firstName + " send the connection request to " + toUser.firstName,
         data
      }); 
-     
+    
     }
     catch(err){
        return res.status(400).send("ERROR   " + err.message);
