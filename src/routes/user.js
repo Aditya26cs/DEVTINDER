@@ -22,7 +22,7 @@ userRoute.get("/user/requests" , userAuth , async(req, res) => {
 
     }
     catch(err){
-        res.statusCode(400).send("error found " + err.message)
+        res.status(400).send("error found " + err.message);
     }
 })
 
@@ -38,15 +38,78 @@ userRoute.get("/user/connections" , userAuth , async(req, res) => {
                 { toUserId : loggedInUser._id , status : "accepted"},
             ]
         }).populate("fromUserId" , ["firstName" , "lastName"])
+        .populate("toUserId" , ["firstName" , "lastName"]);
         
 
-        res.json({message : "Connections fetched successfully" , connections});
+        const data = connections.map((connection) => {
+            if(connection.fromUserId._id.toString() === loggedInUser._id.toString()){
+                return connection.toUserId;
+            }
+            return connection.fromUserId;
+        });
+
+        res.json({message : "Connections fetched successfully" , data});
 
       }
       catch(err){
-        res.statusCode(400).send("error found " + err.message)
+        res.status(400).send("error found " + err.message)
       
       }
+
+})
+
+userRoute.get("/feed" , userAuth , async(req, res) => {
+
+try{
+
+  const loggedInUser = req.user; 
+    
+   // user should see all the user card excepts
+   // myself 
+   // my connections
+   // ignored people 
+   // already send connection request 
+
+
+   const page = parseInt(req.query.page) || 1;
+   const limit = parseInt(req.query.limit) || 10;
+   limit  = limit > 50 ? 50 : limit ;
+   const skip = (page - 1) * limit;
+
+
+
+    const connectionRequests = await ConnectionRequests.find({
+        $or : [{ fromUserId : loggedInUser._id}, { toUserId : loggedInUser._id}]
+    }).select("fromUserId toUserId status")
+    .populate("fromUserId" , "firstName lastName ")
+    .populate("toUserId" , "firstName lastName ");
+
+
+    const hideUserFromFeed = new Set();
+
+    connectionRequests.forEach((request) => {
+
+            // hide both users
+            hideUserFromFeed.add(request.fromUserId._id.toString());
+            hideUserFromFeed.add(request.toUserId._id.toString());
+    
+    });
+
+     console.log(hideUserFromFeed);
+
+    const users = await user.find({
+          $and : [
+             { _id : { $nin : Array.from(hideUserFromFeed)} },
+             { _id : { $ne : loggedInUser._id }} // not myself 
+          ]
+          // show those whoes _id is not present in the hideUserFromFeed array
+    }).select("firstName lastName skills about").skip(skip).limit(limit);
+
+    res.json({message : "Feed fetched successfully" , users});
+}
+catch(err){
+    res.status(400).send("error found " + err.message)
+}
 
 })
 
