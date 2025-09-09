@@ -47,7 +47,8 @@ authRouter.post("/login", async (req, res) => {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
+    console.log(isPasswordValid);
+  
     if (isPasswordValid) {
       // create a jwt token
 
@@ -62,12 +63,14 @@ authRouter.post("/login", async (req, res) => {
 
       res.send("user login successful");
       //console.log(user);
-    } else {
-      throw new Error("password is not correct");
+    } 
+    else {
+      throw new Error("password is incorrect");
     }
-  } catch (err) {
-    console.log(err);
-    res.status(400).send("error found" + err.message);
+
+  } 
+  catch (err) {
+    res.status(400).send("error found " + err.message);
   }
 });
 

@@ -224,7 +224,9 @@ app.delete("/user", express.json(), async (req, res) => {
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRoute = require("./routes/requests");
+const userRoute = require("./routes/user");
 
 app.use("/" , authRouter);
 app.use("/" , profileRouter);
 app.use("/" , requestRoute);
+app.use("/" , userRoute);
