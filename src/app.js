@@ -2,6 +2,17 @@ const express = require("express");
 const connectDb = require("./config/database");
 const app = express();
  
+const User = require("./models/user") 
+const cookieParser = require("cookie-parser")
+// cookie-parser is a middleware for Express.js that helps us read cookies sent by the browser.
+const cors = require("cors")
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(cors());
+
+
+const {userAuth} = require("./middleware/auth")
 
 connectDb() 
 .then(() => {
@@ -115,7 +126,7 @@ connectDb()
 
  
 
-const {userAuth} = require("./middleware/auth")
+ 
 
 // app.use("/admin" , adminAuth)
 // app.use("/user" , userAuth)
@@ -174,17 +185,9 @@ app.post("/user/data", userAuth,  (req,res) => {
  
 // express.json() middleware parses incoming JSON payloads, converts them into JavaScript objects, 
 // and attaches them to req.body.
+// app.use(express.json()); 
 
-const User = require("./models/user") 
-app.use(express.json());
-const {validateSignupData} = require("./utils/validation")
-const bcrypt = require("bcrypt")
-const validator = require("validator");
-const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser")
-app.use(cookieParser());
-// cookie-parser is a middleware for Express.js that helps us read cookies sent by the browser.
-
+ 
 app.get("/user" , async(req, res) => { 
 
     // const email = req.body.emailId
