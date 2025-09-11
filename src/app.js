@@ -9,7 +9,14 @@ const cors = require("cors")
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+}));
+
+// we have to import cors middleware to allow the frontend to access the backend api.
+// by default it block the request if frontend and backend run on different port.
+// credentials: true , this allow us to send the cookie from backend to frontend.  
 
 
 const {userAuth} = require("./middleware/auth")

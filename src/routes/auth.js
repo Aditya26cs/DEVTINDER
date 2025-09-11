@@ -61,7 +61,7 @@ authRouter.post("/login", async (req, res) => {
         expires: new Date(Date.now() + 3 * 3600000),
       });
 
-      res.send("user login successful");
+      res.send(user);
       //console.log(user);
     } 
     else {
