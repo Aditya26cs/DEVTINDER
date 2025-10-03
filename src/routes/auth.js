@@ -47,7 +47,7 @@ authRouter.post("/login", async (req, res) => {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log(isPasswordValid);
+    // console.log(isPasswordValid);
   
     if (isPasswordValid) {
       // create a jwt token
@@ -55,11 +55,11 @@ authRouter.post("/login", async (req, res) => {
       const token = await user.getJWT();
       // console.log(token)
 
-      // add token to a cookie  -> send back the response to the client with this cookie.
-
+       
       res.cookie("token", token, {
         expires: new Date(Date.now() + 3 * 3600000),
       });
+      // add token to a cookie  -> send back the response to the client with this cookie.
 
       res.send(user);
       //console.log(user);
