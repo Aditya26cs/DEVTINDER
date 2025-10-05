@@ -71,11 +71,9 @@ try{
    // already send connection request 
 
 
-   const page = parseInt(req.query.page) || 1;
-   const limit = parseInt(req.query.limit) || 10;
-   limit  = limit > 50 ? 50 : limit ;
-   const skip = (page - 1) * limit;
-
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 10, 50); // never > 50
+    const skip = (page - 1) * limit;
 
 
     const connectionRequests = await ConnectionRequests.find({
@@ -95,7 +93,7 @@ try{
     
     });
 
-     console.log(hideUserFromFeed);
+     // console.log(hideUserFromFeed);
 
     const users = await user.find({
           $and : [
@@ -103,7 +101,7 @@ try{
              { _id : { $ne : loggedInUser._id }} // not myself 
           ]
           // show those whoes _id is not present in the hideUserFromFeed array
-    }).select("firstName lastName skills about").skip(skip).limit(limit);
+    }).select("firstName lastName age about skills").skip(skip).limit(limit);
 
     res.json({message : "Feed fetched successfully" , users});
 }

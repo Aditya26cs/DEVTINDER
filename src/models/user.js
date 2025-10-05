@@ -60,7 +60,12 @@ const userSchema =  mongoose.Schema(
         default : "this is a default discription of user",
     },
     skills : {
-        type : [String]
+        type : [String],
+        default: []
+    },
+    image: {
+        type : String,
+        default : "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
     }
 },
 {
@@ -68,10 +73,10 @@ const userSchema =  mongoose.Schema(
 }
 )
 
-userSchema.methods.getJWT = async function () {
+userSchema.methods.getJWT = function () {
 
     const user = this;
-    const token = await jwt.sign({_id : user._id} , "devTinder@123" , {expiresIn: "1d"});
+    const token = jwt.sign({_id : user._id} , "devTinder@123" , {expiresIn: "1d"});
     return token;
     
 }

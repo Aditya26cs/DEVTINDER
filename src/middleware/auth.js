@@ -7,7 +7,7 @@ const userAuth = async (req, res, next) => {
     // here we get all the cookies save in the browser/postmen/client
     // console.log(token);
     if (!token) {
-      return  res.send("token is not valid");
+      return   res.status(401).send("please login first");
     }
 
     // now we have to validate this token

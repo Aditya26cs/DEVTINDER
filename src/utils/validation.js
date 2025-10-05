@@ -19,8 +19,9 @@ const validateSignupData = (req) => {
 const validationEditProfileData = (req) => {
     const data = req.body;
 
+    if (data.age === "") delete data.age;
     
-    const Update_Allowed = ["about" , "gender" , "age" , "skills"];
+    const Update_Allowed = ["about" , "gender" , "age" , "skills" , "password" , "firstName" , "lastName" , "image"];
 
     const isUpdateAllowed = Object.keys(data).every((k) => {
         return Update_Allowed.includes(k);
