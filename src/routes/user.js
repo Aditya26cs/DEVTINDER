@@ -16,7 +16,8 @@ userRoute.get("/user/requests" , userAuth , async(req, res) => {
         const connectionRequests = await ConnectionRequests.find({
             toUserId : loggedInUser._id,
             status : "interested",
-        }). populate("fromUserId" , ["firstName" , "lastName"]);
+        }).populate("fromUserId", "firstName lastName age gender about image")
+
 
         res.json({message : "Connection Requests fetched successfully" , connectionRequests});
 
@@ -37,9 +38,9 @@ userRoute.get("/user/connections" , userAuth , async(req, res) => {
                 { fromUserId : loggedInUser._id , status : "accepted"},
                 { toUserId : loggedInUser._id , status : "accepted"},
             ]
-        }).populate("fromUserId" , ["firstName" , "lastName"])
-        .populate("toUserId" , ["firstName" , "lastName"]);
-        
+        }).populate("fromUserId" , ["firstName" , "lastName" , "image" , "about" , "skills" , "age"])
+        .populate("toUserId" , ["firstName" , "lastName" , "image" , "about" , "skills" , "age"]);
+
 
         const data = connections.map((connection) => {
             if(connection.fromUserId._id.toString() === loggedInUser._id.toString()){

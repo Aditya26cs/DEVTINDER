@@ -65,7 +65,7 @@ const userSchema =  mongoose.Schema(
     },
     image: {
         type : String,
-        default : "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+        default : "https://toppng.com/uploads/preview/happy-black-person-11531493747ib42obkabb.png"
     }
 },
 {
