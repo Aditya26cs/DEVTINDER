@@ -51,8 +51,7 @@ userRoute.get("/user/connections", userAuth, async (req, res) => {
         "age",
       ]);
 
-    const data = connections
-      .map((connection) => {
+    const data = connections.map((connection) => {
         // skip if any user is null
         if (!connection.fromUserId || !connection.toUserId) return null;
 
