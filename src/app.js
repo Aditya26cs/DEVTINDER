@@ -1,7 +1,6 @@
 const express = require("express");
 const connectDb = require("./config/database");
 const app = express();
- 
 const User = require("./models/user") 
 const cookieParser = require("cookie-parser")
 // cookie-parser is a middleware for Express.js that helps us read cookies sent by the browser.
@@ -210,7 +209,7 @@ app.get("/user" , async(req, res) => {
        res.status(400).send("user not found")
     }
 })
-// to fetch all the users we have to use the -> User.find({}).
+// to fetch all the users we have to use -> User.find({}).
  
 app.delete("/user", express.json(), async (req, res) => {
     const id = req.body.userId;
