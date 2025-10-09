@@ -8,10 +8,10 @@ const cors = require("cors")
 
 app.use(cookieParser());
 app.use(express.json());
+
 app.use(cors({
-    origin:  "https://devtinder-web-alpha.vercel.app/",
-    // local url of frontend
-    credentials: true,
+    origin: "http://localhost:5173",
+    credentials: true
 }));
 
 // we have to import cors middleware to allow the frontend to access the backend api.
@@ -21,7 +21,7 @@ app.use(cors({
 
 const {userAuth} = require("./middleware/auth")
 
-const PORT = process.env.PORT || 3000; // works locally and on Render
+const PORT = 3000;
 
 connectDb()
   .then(() => {
