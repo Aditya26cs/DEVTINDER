@@ -3,7 +3,7 @@ const validator = require('validator');
 const jwt = require("jsonwebtoken")
 // Schema = Structure of a Document
 
-// A collection in MongoDB is like a table in SQL databases, but it stores documents instead of rows.
+// A collection in MongoDB is like a table in SQL databases, but it stores documents in the form of json instead of row and coloum.
 
 // 🔹 Database → Contains multiple collections
 // 🔹 Collection → Contains multiple documents

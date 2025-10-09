@@ -9,7 +9,7 @@ const cors = require("cors")
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin:  "https://devtinder-web-alpha.vercel.app/",
     // local url of frontend
     credentials: true,
 }));
@@ -21,14 +21,19 @@ app.use(cors({
 
 const {userAuth} = require("./middleware/auth")
 
-connectDb() 
-.then(() => {
-    console.log("database connected successfully")
-    app.listen(3000);
-})
-.catch((err) => {
- console.error("database not connected ")
-})
+const PORT = process.env.PORT || 3000; // works locally and on Render
+
+connectDb()
+  .then(() => {
+      app.listen(PORT, () => {
+          console.log("✅ Database connected successfully");
+          console.log(`🚀 Server running on port ${PORT}`);
+      });
+  })
+  .catch((err) => {
+      console.error("❌ Database not connected:", err); // log full error
+  });
+
 
 // function takes two thing path and (middleware) . it can be as many router handler function
 
