@@ -142,6 +142,9 @@ connectDb()
 
 // app.use("/admin" , adminAuth)
 // app.use("/user" , userAuth)
+app.get('/', (req, res) => {
+  res.send('Hello from Express on Vercel!');
+});
 
 app.get("/admin/data", (req,res) => {
        res.send("all data send")
