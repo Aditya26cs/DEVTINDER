@@ -19,6 +19,7 @@ app.use(cors({
 // credentials: true , this allow us to send the cookie from backend to frontend.  
 
 
+
 const {userAuth} = require("./middleware/auth")
 
 const PORT = 3000;
