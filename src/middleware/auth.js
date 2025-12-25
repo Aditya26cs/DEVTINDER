@@ -3,6 +3,7 @@ const User = require("../models/user");
 
 const userAuth = async (req, res, next) => {
   try {
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>", JSON.stringify(req.cookies))
     const { token } = req.cookies;
     // here we get all the cookies save in the browser/postmen/client
     // console.log(token);
