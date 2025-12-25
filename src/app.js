@@ -10,9 +10,11 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use(cors({
-    origin: ["http://localhost:5173", "https://devtinder-web-b9w1.vercel.app"],
+    origin: ["http://localhost:5173", "https://devtinder-web-b9w1.vercel.app", "https://aditya26cs.github.io/"],
     credentials: true
 }));
+
+// app.use(cors())
 
 // we have to import cors middleware to allow the frontend to access the backend api.
 // by default it block the request if frontend and backend run on different port.
