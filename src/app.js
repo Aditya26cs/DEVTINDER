@@ -10,7 +10,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use(cors({
-    origin: ["http://localhost:5173", "https://devtinder-web-b9w1.vercel.app", "https://aditya26cs.github.io/"],
+    origin: ["http://localhost:5173", "https://devtinder-web-b9w1.vercel.app", "https://aditya26cs.github.io"],
     credentials: true
 }));
 
