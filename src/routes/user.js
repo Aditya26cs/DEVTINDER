@@ -79,7 +79,7 @@ userRoute.get("/feed", userAuth, async (req, res) => {
     // already send connection request
 
     const page = parseInt(req.query.page) || 1;
-    const limit = Math.min(parseInt(req.query.limit) || 10, 50); // never > 50
+    const limit = Math.min(parseInt(req.query.limit) || 50); // never > 50
     const skip = (page - 1) * limit;
 
     const connectionRequests = await ConnectionRequests.find({
