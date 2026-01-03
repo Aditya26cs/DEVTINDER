@@ -7,6 +7,11 @@ const bcrypt = require("bcrypt")
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
     const user = req.user;
+
+    if (!user) {
+      throw new Error("User data not found in request");
+    }
+    
     res.send(user);
   } catch (err) {
     res.status(400).send("error found" + err.message);
